@@ -128,16 +128,15 @@ const QuickActions: React.FC<QuickActionsProps> = ({
               <label htmlFor="purchaseAmount">Amount ($)</label>
               <input
                 id="purchaseAmount"
-                type="number"
-                step="0.01"
-                min="0.01"
-                max={maxSpendable / 100}
+                type="text"
+                inputMode="decimal"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                placeholder="25.50"
-                required
+                placeholder="75"
+                autoComplete="off"
                 disabled={isSubmitting}
               />
+              <small>Enter purchase amount (e.g., 75 for $75.00)</small>
             </div>
 
             <div className="form-group">

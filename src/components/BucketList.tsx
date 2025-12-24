@@ -3,6 +3,7 @@ import { Bucket, BucketStatus } from '../types';
 import { formatCurrency } from '../utils/currency';
 import { useSafeToSpend } from '../context/SafeToSpendContext';
 import CreateBucketForm from './CreateBucketForm';
+import EditBucketForm from './EditBucketForm';
 import { 
   Lock, 
   Unlock, 
@@ -11,7 +12,8 @@ import {
   CheckCircle,
   PlusCircle,
   AlertTriangle,
-  Target
+  Target,
+  Edit3
 } from 'lucide-react';
 
 interface BucketListProps {
@@ -21,6 +23,7 @@ interface BucketListProps {
 const BucketList: React.FC<BucketListProps> = ({ buckets }) => {
   const { service, refreshData } = useSafeToSpend();
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [editingBucket, setEditingBucket] = useState<Bucket | null>(null);
 
   const getStatusIcon = (status: BucketStatus) => {
     switch (status) {
@@ -76,6 +79,16 @@ const BucketList: React.FC<BucketListProps> = ({ buckets }) => {
       {showCreateForm && (
         <div className="card create-bucket-card">
           <CreateBucketForm onComplete={() => setShowCreateForm(false)} />
+        </div>
+      )}
+
+      {editingBucket && (
+        <div className="card edit-bucket-card">
+          <EditBucketForm 
+            bucket={editingBucket}
+            onComplete={() => setEditingBucket(null)} 
+            onCancel={() => setEditingBucket(null)}
+          />
         </div>
       )}
 
@@ -178,6 +191,16 @@ const BucketList: React.FC<BucketListProps> = ({ buckets }) => {
                     <span>Cooldown until {new Date(bucket.cooldown_ends_at).toLocaleDateString()}</span>
                   </div>
                 )}
+
+                <div className="bucket-management">
+                  <button
+                    className="action-button edit"
+                    onClick={() => setEditingBucket(bucket)}
+                  >
+                    <Edit3 size={16} />
+                    Edit
+                  </button>
+                </div>
               </div>
 
               <div className="bucket-allocation">

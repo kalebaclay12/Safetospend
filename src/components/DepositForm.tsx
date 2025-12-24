@@ -107,15 +107,15 @@ const DepositForm: React.FC<DepositFormProps> = ({ accountId }) => {
             <label htmlFor="amount">Amount ($)</label>
             <input
               id="amount"
-              type="number"
-              step="0.01"
-              min="0.01"
+              type="text"
+              inputMode="decimal"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              placeholder="100.00"
-              required
+              placeholder="1500"
+              autoComplete="off"
               disabled={isSubmitting}
             />
+            <small>Enter amount to add to your account (e.g., 1500 for $1,500)</small>
           </div>
 
           <div className="form-group">

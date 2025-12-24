@@ -1,11 +1,11 @@
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  font-family: 'Courier New', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  line-height: 1.2;
+  font-weight: 700;
   
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color-scheme: dark;
+  color: #F5F5DC;
+  background-color: #000000;
   
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -24,7 +24,8 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #000000;
+  color: #F5F5DC;
 }
 
 #root {
@@ -37,13 +38,25 @@ body {
 
 /* Card Components */
 .card {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 15px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 2rem;
+  background: #000000;
+  border: 4px solid #F5F5DC;
+  border-radius: 0;
+  padding: 1.5rem;
   margin: 1rem 0;
   text-align: left;
+  box-shadow: 8px 8px 0px #F5F5DC;
+  position: relative;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  background: #F5F5DC;
+  z-index: -1;
 }
 
 /* Dashboard */
@@ -75,54 +88,66 @@ body {
 
 .balance-icon {
   padding: 1rem;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  border-radius: 0;
+  background: #000000;
+  border: 3px solid #F5F5DC;
+  color: #F5F5DC;
 }
 
 .balance-icon.available {
-  background: rgba(74, 222, 128, 0.3);
-  color: #4ade80;
+  background: #000000;
+  border-color: #00FF00;
+  color: #00FF00;
 }
 
 .balance-icon.locked {
-  background: rgba(248, 113, 113, 0.3);
-  color: #f87171;
+  background: #000000;
+  border-color: #FF0000;
+  color: #FF0000;
 }
 
 .balance-divider {
-  width: 1px;
+  width: 4px;
   height: 60px;
-  background: rgba(255, 255, 255, 0.3);
+  background: #F5F5DC;
 }
 
 .balance-display {
   font-size: 2.5rem;
-  font-weight: bold;
+  font-weight: 900;
   margin: 1rem 0;
+  color: #F5F5DC;
+  text-shadow: 4px 4px 0px #000000;
+  letter-spacing: 2px;
 }
 
 .available-amount {
-  color: #4ade80;
+  color: #00FF00;
+  text-shadow: 2px 2px 0px #000000;
 }
 
 .locked-amount {
-  color: #f87171;
+  color: #FF0000;
+  text-shadow: 2px 2px 0px #000000;
 }
 
 .balance-summary {
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
+  background: #000000;
+  border: 2px solid #F5F5DC;
+  border-radius: 0;
   font-size: 1.1rem;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 /* Action Tabs */
 .action-tabs {
   display: flex;
-  gap: 0;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
+  gap: 4px;
+  background: #000000;
+  border: 4px solid #F5F5DC;
+  border-radius: 0;
   padding: 4px;
   margin-bottom: 2rem;
 }
@@ -130,24 +155,27 @@ body {
 .tab-button {
   flex: 1;
   padding: 1rem 2rem;
-  background: transparent;
-  border: none;
-  border-radius: 8px;
-  color: rgba(255, 255, 255, 0.7);
-  font-weight: 500;
+  background: #000000;
+  border: 2px solid #F5F5DC;
+  border-radius: 0;
+  color: #F5F5DC;
+  font-weight: 900;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.1s;
+  text-transform: uppercase;
+  font-family: inherit;
+  letter-spacing: 1px;
 }
 
 .tab-button:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.9);
+  background: #F5F5DC;
+  color: #000000;
 }
 
 .tab-button.active {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  font-weight: 600;
+  background: #F5F5DC;
+  color: #000000;
+  font-weight: 900;
 }
 
 /* Bucket List */
@@ -309,6 +337,12 @@ body {
   color: #f87171;
 }
 
+.action-button.edit {
+  background: rgba(168, 85, 247, 0.3);
+  border-color: #a855f7;
+  color: #a855f7;
+}
+
 .cooldown-info {
   display: flex;
   align-items: center;
@@ -323,6 +357,78 @@ body {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   font-size: 0.8rem;
   opacity: 0.8;
+}
+
+.bucket-management {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Edit Bucket Form */
+.edit-bucket-form {
+  max-width: none;
+}
+
+.edit-bucket-form .form-header {
+  margin-bottom: 2rem;
+}
+
+.edit-bucket-form .form-header h3 {
+  margin: 0 0 1rem 0;
+  color: #a855f7;
+}
+
+.bucket-balance-info {
+  display: flex;
+  gap: 2rem;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.bucket-balance-info strong {
+  color: #4ade80;
+}
+
+.form-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.primary-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.danger-zone {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.delete-confirm {
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.delete-confirm p {
+  margin: 0 0 1rem 0;
+  color: #f87171;
+}
+
+.delete-confirm button {
+  margin-right: 0.5rem;
+}
+
+.delete-warning {
+  color: #fbbf24;
+  font-size: 0.8rem;
 }
 
 /* Forms */
@@ -347,15 +453,42 @@ body {
 .form-group select {
   width: 100%;
   padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 8px;
-  color: white;
+  background: #000000;
+  border: 3px solid #F5F5DC;
+  border-radius: 0;
+  color: #F5F5DC;
   font-size: 1rem;
+  font-weight: 700;
+  font-family: inherit;
+}
+
+/* Remove number input spinner arrows */
+.form-group input[type=number]::-webkit-outer-spin-button,
+.form-group input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.form-group input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* Ensure text inputs are completely freeform */
+.form-group input[type=text] {
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
 }
 
 .form-group input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
+  color: #888888;
+  font-weight: 700;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #00FF00;
+  box-shadow: 4px 4px 0px #00FF00;
 }
 
 .form-group small {
@@ -391,41 +524,67 @@ body {
 
 /* Buttons */
 button {
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 8px;
+  background: #000000;
+  border: 3px solid #F5F5DC;
+  border-radius: 0;
   padding: 0.75rem 1.5rem;
-  color: white;
+  color: #F5F5DC;
   cursor: pointer;
-  transition: all 0.2s;
-  font-weight: 500;
+  transition: all 0.1s;
+  font-weight: 900;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  text-transform: uppercase;
+  font-family: inherit;
+  letter-spacing: 1px;
+  box-shadow: 4px 4px 0px #F5F5DC;
 }
 
 button:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: translateY(-1px);
+  background: #F5F5DC;
+  color: #000000;
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px #F5F5DC;
+}
+
+button:active {
+  transform: translate(0px, 0px);
+  box-shadow: 2px 2px 0px #F5F5DC;
 }
 
 button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;
+  box-shadow: 4px 4px 0px #F5F5DC;
 }
 
 button.primary {
-  background: rgba(74, 222, 128, 0.3);
-  border-color: #4ade80;
-  color: #4ade80;
+  background: #000000;
+  border-color: #00FF00;
+  color: #00FF00;
+  box-shadow: 4px 4px 0px #00FF00;
+}
+
+button.primary:hover {
+  background: #00FF00;
+  color: #000000;
+  box-shadow: 6px 6px 0px #00FF00;
 }
 
 button.secondary {
-  background: rgba(107, 114, 128, 0.3);
-  border-color: #6b7280;
-  color: #9ca3af;
+  background: #000000;
+  border-color: #888888;
+  color: #888888;
+  box-shadow: 4px 4px 0px #888888;
+}
+
+button.secondary:hover {
+  background: #888888;
+  color: #000000;
+  box-shadow: 6px 6px 0px #888888;
 }
 
 button.full-width {
@@ -433,9 +592,16 @@ button.full-width {
 }
 
 button.danger {
-  background: rgba(248, 113, 113, 0.3);
-  border-color: #f87171;
-  color: #f87171;
+  background: #000000;
+  border-color: #FF0000;
+  color: #FF0000;
+  box-shadow: 4px 4px 0px #FF0000;
+}
+
+button.danger:hover {
+  background: #FF0000;
+  color: #000000;
+  box-shadow: 6px 6px 0px #FF0000;
 }
 
 /* Allocation Preview */

@@ -68,6 +68,124 @@ export class SafeToSpendService {
       .sort((a, b) => a.priority - b.priority);
   }
 
+  getBucket(bucketId: string): Bucket | undefined {
+    return this.buckets.get(bucketId);
+  }
+
+  updateBucket(bucketId: string, updates: Partial<CreateBucketData>): { success: boolean; error?: string } {
+    const bucket = this.buckets.get(bucketId);
+    if (!bucket) {
+      return { success: false, error: 'Bucket not found' };
+    }
+
+    // Update bucket properties
+    if (updates.name !== undefined) bucket.name = updates.name;
+    if (updates.priority !== undefined) bucket.priority = updates.priority;
+    if (updates.allocation_type !== undefined) bucket.allocation_type = updates.allocation_type;
+    if (updates.allocation_value !== undefined) bucket.allocation_value = updates.allocation_value;
+    if (updates.target_cents !== undefined) bucket.target_cents = updates.target_cents;
+    if (updates.is_bill !== undefined) bucket.is_bill = updates.is_bill;
+    if (updates.bill_rule !== undefined) bucket.bill_rule = updates.bill_rule as any;
+    
+    bucket.updated_at = new Date();
+
+    const adjustmentEvent: LedgerEvent = {
+      id: uuidv4(),
+      account_id: bucket.account_id,
+      bucket_id: bucketId,
+      type: LedgerEventType.ADJUSTMENT,
+      cents: 0, // No monetary change for metadata updates
+      created_at: new Date(),
+      metadata: { 
+        type: 'bucket_update',
+        updates: updates,
+        reason: 'User updated bucket settings'
+      }
+    };
+    this.ledgerEvents.push(adjustmentEvent);
+
+    this.saveToStorage();
+    return { success: true };
+  }
+
+  deleteBucket(bucketId: string): { success: boolean; error?: string; transferredAmount?: number } {
+    const bucket = this.buckets.get(bucketId);
+    if (!bucket) {
+      return { success: false, error: 'Bucket not found' };
+    }
+
+    if (bucket.balance_cents > 0) {
+      return { 
+        success: false, 
+        error: `Cannot delete bucket with ${(bucket.balance_cents / 100).toFixed(2)} remaining. Transfer funds first.` 
+      };
+    }
+
+    // Remove bucket
+    this.buckets.delete(bucketId);
+
+    const adjustmentEvent: LedgerEvent = {
+      id: uuidv4(),
+      account_id: bucket.account_id,
+      bucket_id: bucketId,
+      type: LedgerEventType.ADJUSTMENT,
+      cents: 0,
+      created_at: new Date(),
+      metadata: { 
+        type: 'bucket_deleted',
+        bucket_name: bucket.name,
+        reason: 'User deleted bucket'
+      }
+    };
+    this.ledgerEvents.push(adjustmentEvent);
+
+    this.saveToStorage();
+    return { success: true };
+  }
+
+  transferBetweenBuckets(fromBucketId: string, toBucketId: string, amountCents: number): { success: boolean; error?: string } {
+    const fromBucket = this.buckets.get(fromBucketId);
+    const toBucket = this.buckets.get(toBucketId);
+
+    if (!fromBucket || !toBucket) {
+      return { success: false, error: 'One or both buckets not found' };
+    }
+
+    if (fromBucket.account_id !== toBucket.account_id) {
+      return { success: false, error: 'Cannot transfer between different accounts' };
+    }
+
+    const availableAmount = fromBucket.balance_cents - fromBucket.locked_cents;
+    if (amountCents > availableAmount) {
+      return { success: false, error: 'Insufficient unlocked funds in source bucket' };
+    }
+
+    // Transfer funds
+    fromBucket.balance_cents -= amountCents;
+    toBucket.balance_cents += amountCents;
+    fromBucket.updated_at = new Date();
+    toBucket.updated_at = new Date();
+
+    const transferEvent: LedgerEvent = {
+      id: uuidv4(),
+      account_id: fromBucket.account_id,
+      type: LedgerEventType.TRANSFER,
+      cents: amountCents,
+      created_at: new Date(),
+      metadata: {
+        from_bucket_id: fromBucketId,
+        to_bucket_id: toBucketId,
+        from_bucket_name: fromBucket.name,
+        to_bucket_name: toBucket.name,
+        description: `Transfer from ${fromBucket.name} to ${toBucket.name}`
+      }
+    };
+    this.ledgerEvents.push(transferEvent);
+
+    this.saveToStorage();
+    return { success: true };
+  }
+
   // Core Financial Operations
   deposit(data: DepositData): { success: boolean; events: LedgerEvent[] } {
     const account = this.accounts.get(data.account_id);
